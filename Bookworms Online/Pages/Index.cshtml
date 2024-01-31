@@ -1,0 +1,84 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@*
+    <div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+*@
+
+<input type="hidden" id="logoutTimer" />
+
+<script>
+    const inactivityTimeout = 10000; // 10 seconds
+
+    function performLogout() {
+        window.location.href = '/Login'; // Redirect to the login page
+    }
+
+    function resetInactivityTimer() {
+        const timerId = document.getElementById('logoutTimer').value;
+        if (timerId) {
+            clearTimeout(timerId);
+        }
+
+        const newTimerId = setTimeout(performLogout, inactivityTimeout);
+        document.getElementById('logoutTimer').value = newTimerId;
+
+        const currentTime = new Date().toISOString();
+        fetch('/api/update-last-accessed', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ lastAccessed: currentTime })
+        });
+    }
+
+    document.addEventListener('mousemove', resetInactivityTimer);
+    document.addEventListener('keypress', resetInactivityTimer);
+
+    resetInactivityTimer();
+</script>
+
+
+<div>
+    @functions{
+        public int divide(int x, int y)
+        {
+            string errormessage;
+            try
+            {
+                return x / y;
+            }
+            catch (DivideByZeroException d)
+            {
+                errormessage = d.ToString();
+                WriteLiteral("<br />Cannot Divide by Zero Exception found <br><br />");
+                WriteLiteral("Additional Info <br><br />" + errormessage);
+                return 0;
+
+            }
+            
+        }
+
+    }
+    <h3>Division of 10/5 is @divide(10, 5)</h3>
+    <h3>Division of 10/0 is @divide(12,0)</h3>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col">
+            <h1>Welcome to Bookworms Online</h1>
+            <p>Decrypted Data: @Model.DecryptedCreditCardNo</p>
+            @*Displaying the session id:*@
+            <p>Session ID: @Model.SessionId</p>
+        </div>
+    </div>
+</div>
+

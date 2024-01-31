@@ -1,0 +1,11 @@
+﻿@page
+@model Bookworms_Online.Pages.ErrorPageModel
+
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Oops! Something went wrong.</h1>
+    <p>@TempData["ErrorMessage"]</p>
+</div>
